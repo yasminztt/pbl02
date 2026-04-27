@@ -8,6 +8,9 @@ public class BinarySearchTree {
     }
 
     public void insert(Player player) {
+        if (rankingExists(player.getRanking())) {
+            incrementRankings(root, player.getRanking());
+        }
         root = insert(root, player);
     }
 
@@ -23,6 +26,21 @@ public class BinarySearchTree {
         }
 
         return current;
+    }
+
+    private void incrementRankings(Node current, int minRanking) {
+        if (current == null) {
+            return;
+        }
+
+        // Incrementa ranking se for >= ao ranking do novo jogador
+        if (current.getPlayer().getRanking() >= minRanking) {
+            current.getPlayer().setRanking(current.getPlayer().getRanking() + 1);
+        }
+
+        // Recursivamente incrementa na esquerda e direita
+        incrementRankings(current.getLeft(), minRanking);
+        incrementRankings(current.getRight(), minRanking);
     }
 
     public Node searchNode(String nickname) {
@@ -54,10 +72,30 @@ public class BinarySearchTree {
         Node nodeToRemove = search(root, nickname);
         if (nodeToRemove != null) {
             Player removedPlayer = nodeToRemove.getPlayer();
+            int removedRanking = removedPlayer.getRanking();
+            
             root = remove(root, nickname);
+            
+            decrementRankings(root, removedRanking);
+            
             return removedPlayer;
         }
         return null;
+    }
+
+    private void decrementRankings(Node current, int minRanking) {
+        if (current == null) {
+            return;
+        }
+
+        // Decrementa ranking se for > ao ranking do jogador removido
+        if (current.getPlayer().getRanking() > minRanking) {
+            current.getPlayer().setRanking(current.getPlayer().getRanking() - 1);
+        }
+
+        // Recursivamente decrementa na esquerda e direita
+        decrementRankings(current.getLeft(), minRanking);
+        decrementRankings(current.getRight(), minRanking);
     }
 
     private Node remove(Node current, String nickname) {
