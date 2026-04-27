@@ -118,6 +118,26 @@ public class BinarySearchTree {
         return getHeight(root);
     }
 
+    public boolean rankingExists(int ranking) {
+        return rankingExists(root, ranking);
+    }
+
+    private boolean rankingExists(Node current, int ranking) {
+        if (current == null) {
+            return false;
+        }
+
+        if (ranking == current.getPlayer().getRanking()) {
+            return true;
+        }
+
+        if (ranking < current.getPlayer().getRanking()) {
+            return rankingExists(current.getLeft(), ranking);
+        }
+
+        return rankingExists(current.getRight(), ranking);
+    }
+
     private int getHeight(Node node) {
         if (node == null) {
             return 0;

@@ -20,10 +20,12 @@ public class CSVReader {
                     continue;
                 }
 
-                String[] parts = line.split(",");
-                if (parts.length == 2) {
-                    String nickname = parts[0].trim();
-                    int ranking = Integer.parseInt(parts[1].trim());
+                int commaIndex = line.indexOf(",");
+
+                if (commaIndex > 0) {
+                    String nickname = line.substring(0, commaIndex).trim();
+                    int ranking = Integer.parseInt(line.substring(commaIndex + 1).trim());
+
                     Player player = new Player(nickname, ranking);
                     tree.insert(player);
                 }
